@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>管理员图片上传</title>
+    <style>
+        /* ---- reset ---- */
+        body {
+            margin: 0;
+            font: normal 75% Arial, Helvetica, sans-serif;
+        }
+
+        canvas {
+            display: block;
+            vertical-align: bottom;
+        }
+
+        /* ---- tsparticles container ---- */
+        #tsparticles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+
+        .github {
+            bottom: 10px;
+            right: 10px;
+            position: fixed;
+            border-radius: 10px;
+            background: #fff;
+            padding: 0 12px 6px 12px;
+            border: 1px solid #000;
+        }
+
+        .github a:hover,
+        .github a:link,
+        .github a:visited,
+        .github a:active {
+            color: #000;
+            text-decoration: none;
+        }
+
+        .github img {
+            height: 30px;
+        }
+
+        .github #gh-project {
+            font-size: 20px;
+            padding-left: 5px;
+            font-weight: bold;
+            vertical-align: bottom;
+        }
+    </style>
+    <style type="text/css">
+        #pic-show {
+            height: 100px;
+            width: auto;
+        }
+
+        .pic-select {
+            color: #FFFFFF;
+            position: relative;
+            width: 130px;
+            height: 50px;
+            font-size: 14px;
+            background: linear-gradient(0deg, rgba(0, 172, 238, 1) 0%, rgba(2, 126, 251, 1) 100%);
+            border: 1px solid #464646;
+            border-radius: 5px;
+            font-size: 20px;
+            text-align: center;
+            line-height: 50px;
+            z-index: 10;
+            margin-bottom: 10px;
+            margin-left: 895px;
+            margin-top: 350px;
+        }
+
+        .pic-select input {
+            width: 150px;
+            height: 50px;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            opacity: 0;
+            z-index: 1000;
+        }
+
+        #err {
+            position: absolute;
+            color: #FFFFFF;
+            margin-left: 20px;
+            margin-top: -330px;
+        }
+    </style>
+    <style>
+        body {
+            background: #e0e5ec;
+        }
+
+        h1 {
+            position: relative;
+            text-align: center;
+            color: #353535;
+            font-size: 50px;
+            font-family: "Cormorant Garamond", serif;
+        }
+
+        p {
+            font-family: 'Lato', sans-serif;
+            font-weight: 300;
+            text-align: center;
+            font-size: 18px;
+            color: #676767;
+        }
+
+
+        button {
+            margin: 20px;
+        }
+
+        .custom-btn {
+            width: 130px;
+            height: 40px;
+            color: #fff;
+            border-radius: 5px;
+            padding: 10px 25px;
+            font-family: 'Lato', sans-serif;
+            font-weight: 500;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
+            box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, .5),
+            7px 7px 20px 0px rgba(0, 0, 0, .1),
+            4px 4px 5px 0px rgba(0, 0, 0, .1);
+            outline: none;
+        }
+
+        /* 12 */
+        .btn-12 {
+            position: relative;
+            right: 20px;
+            bottom: 20px;
+            border: none;
+            box-shadow: none;
+            width: 130px;
+            height: 40px;
+            line-height: 42px;
+            -webkit-perspective: 230px;
+            perspective: 230px;
+            margin-left: 895px;
+        }
+
+        .btn-12 span {
+            background: rgb(0, 172, 238);
+            background: linear-gradient(0deg, rgba(0, 172, 238, 1) 0%, rgba(2, 126, 251, 1) 100%);
+            display: block;
+            position: absolute;
+            width: 130px;
+            height: 40px;
+            box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, .5),
+            7px 7px 20px 0px rgba(0, 0, 0, .1),
+            4px 4px 5px 0px rgba(0, 0, 0, .1);
+            border-radius: 5px;
+            margin: 0;
+            text-align: center;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            -webkit-transition: all .3s;
+            transition: all .3s;
+        }
+
+        .btn-12 span:nth-child(1) {
+            box-shadow: -7px -7px 20px 0px #fff9,
+            -4px -4px 5px 0px #fff9,
+            7px 7px 20px 0px #0002,
+            4px 4px 5px 0px #0001;
+            -webkit-transform: rotateX(90deg);
+            -moz-transform: rotateX(90deg);
+            transform: rotateX(90deg);
+            -webkit-transform-origin: 50% 50% -20px;
+            -moz-transform-origin: 50% 50% -20px;
+            transform-origin: 50% 50% -20px;
+        }
+
+        .btn-12 span:nth-child(2) {
+            -webkit-transform: rotateX(0deg);
+            -moz-transform: rotateX(0deg);
+            transform: rotateX(0deg);
+            -webkit-transform-origin: 50% 50% -20px;
+            -moz-transform-origin: 50% 50% -20px;
+            transform-origin: 50% 50% -20px;
+        }
+
+        .btn-12:hover span:nth-child(1) {
+            box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, .5),
+            7px 7px 20px 0px rgba(0, 0, 0, .1),
+            4px 4px 5px 0px rgba(0, 0, 0, .1);
+            -webkit-transform: rotateX(0deg);
+            -moz-transform: rotateX(0deg);
+            transform: rotateX(0deg);
+        }
+
+        .btn-12:hover span:nth-child(2) {
+            box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, .5),
+            7px 7px 20px 0px rgba(0, 0, 0, .1),
+            4px 4px 5px 0px rgba(0, 0, 0, .1);
+            color: transparent;
+            -webkit-transform: rotateX(-90deg);
+            -moz-transform: rotateX(-90deg);
+            transform: rotateX(-90deg);
+        }
+
+        .dropdown-menu {
+            min-width: 100px;
+        }
+
+        .dropdown-menu > li > a:hover {
+            background: rgb(0, 153, 219);
+            color: #FFFFFF
+        }
+
+        .dropdown-menu {
+            border-radius: 0;
+        }
+
+        .Category {
+            text-align: center;
+            text-align-last: center;
+        }
+    </style>
+</head>
+<body>
+<!-- 动态背景核心id -->
+<div id="tsparticles"></div>
+<form id="form" method="post" action="#" enctype="multipart/form-data">
+    <div class="pic-upload">
+        <div class="pic-select">选择图片
+            <input id="file" type="file" name="img" multiple="multiple" accept="/image/*"/>
+        </div>
+        <div id="pic-show"></div>
+    </div>
+<!--    <div style="margin-left: 880px;margin-top: -60px;position: absolute"></div>-->
+    <button id="Button" class="custom-btn btn-12"><span>上传</span><span>不是按钮</span></button>
+
+</form>
+<script async="" defer="" src="https://buttons.github.io/buttons.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tsparticles"></script>
+<script src="jquery.js"></script>
+<script>
+    /**
+     * 判断是否选择图片
+     */
+    $("#Button").click(function () {
+        var file = $("#file").val();
+        if (file === null || file === "") {
+            alert("请选择一张图片再请上传!");
+        } else {
+            $("#form").attr("action", "uploadServlet");
+        }
+    });
+</script>
+<script>
+    tsParticles.load("tsparticles", {
+        backgroundMode: {
+            enable: true
+        },
+        fpsLimit: 60,
+        particles: {
+            number: {
+                value: 0
+            },
+            collisions: {
+                enable: false
+            },
+            color: {
+                value: "#ffffff"
+            },
+            shape: {
+                type: "circle"
+            },
+            opacity: {
+                value: {min: 0.3, max: 0.8}
+            },
+            size: {
+                value: {min: 1, max: 10}
+            },
+            move: {
+                enable: true,
+                size: true,
+                speed: 5,
+                direction: "none",
+                outModes: {
+                    default: "destroy"
+                },
+                trail: {
+                    enable: true,
+                    fillColor: "#000000",
+                    length: 3
+                }
+            }
+        },
+        detectRetina: true,
+        background: {
+            color: "#000"
+        },
+        emitters: {
+            direction: "none",
+            rate: {
+                delay: 0.25,
+                quantity: 10
+            },
+            position: {
+                x: 50,
+                y: 50
+            },
+            size: {
+                width: 0,
+                height: 0
+            },
+            spawnColor: {
+                value: "#ff0000",
+                animation: {
+                    h: {
+                        enable: true,
+                        speed: 5
+                    },
+                    l: {
+                        enable: true,
+                        speed: 0,
+                        offset: {
+                            min: 20,
+                            max: 80
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+</script>
+</body>
+</html>
